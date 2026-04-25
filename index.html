@@ -305,10 +305,10 @@ function escapeHtml(s) {
 function getSaldoAwal(mk) {
   const pmk = prevMonthKey(mk);
   const prevTxs = getTransactions(pmk);
+  if (prevTxs.length === 0) return 0; // stop recursion
   let totalIn = 0, totalOut = 0;
   prevTxs.forEach(t => { t.type === 'income' ? totalIn += t.amount : totalOut += t.amount; });
-  // Recursively accumulate
-  return (prevTxs.length > 0 ? totalIn - totalOut : 0) + getSaldoAwal(pmk);
+  return (totalIn - totalOut) + getSaldoAwal(pmk);
 }
 
 // ── Render ──
