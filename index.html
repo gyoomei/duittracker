@@ -135,6 +135,62 @@
     .budget-bar-wrap { flex-direction:column; align-items:stretch }
     .budget-bar-wrap input { width:100% }
   }
+
+
+/* Visual upgrades */
+body { overflow-x: hidden; }
+.container { transition: opacity 0.18s ease, transform 0.18s ease; }
+.container.switching { opacity: 0.55; transform: translateY(6px) scale(0.995); }
+header, .summary-card, .chart-card, .form-section, .tx-item, .budget-bar-wrap { backdrop-filter: blur(8px); }
+.summary-card, .chart-card, .form-section, .tx-item, .budget-bar-wrap { position: relative; overflow: hidden; }
+.summary-card::after, .chart-card::after, .form-section::after, .budget-bar-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent 35%);
+  pointer-events: none;
+}
+.summary-card, .chart-card, .form-section, .tx-item, .budget-bar-wrap { transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease; }
+.summary-card:hover, .chart-card:hover, .form-section:hover, .tx-item:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,0.14); }
+.summary-card, .chart-card, .form-section { animation: fadeUp 0.45s ease both; }
+.summary-card:nth-child(1){animation-delay:.02s}.summary-card:nth-child(2){animation-delay:.06s}.summary-card:nth-child(3){animation-delay:.1s}.summary-card:nth-child(4){animation-delay:.14s}
+.chart-card:nth-child(1){animation-delay:.08s}.chart-card:nth-child(2){animation-delay:.14s}
+.form-section{animation-delay:.16s}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInTx { from { opacity: 0; transform: translateX(18px) scale(0.98); } to { opacity: 1; transform: translateX(0) scale(1); } }
+.tx-enter { animation: slideInTx 0.36s ease both; }
+.tx-group { margin-bottom: 12px; }
+.tx-group-header { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin: 10px 2px 8px; }
+.tx-group-header::before { content: ''; width: 18px; height: 1px; background: var(--border); }
+.tx-item { will-change: transform; touch-action: pan-y; }
+.tx-item.swiping { transition: transform 0.08s linear, opacity 0.08s linear; }
+.tx-item.swipe-out { opacity: 0; transform: translateX(-100%) !important; }
+.accent-picker { width: 28px; height: 28px; padding: 0; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; cursor: pointer; overflow: hidden; box-shadow: var(--shadow); }
+.accent-picker::-webkit-color-swatch-wrapper { padding: 0; }
+.accent-picker::-webkit-color-swatch { border: none; border-radius: 6px; }
+.toggle-wrap { display: flex; align-items: center; gap: 8px; }
+.fab { position: fixed; right: 18px; bottom: 18px; width: 58px; height: 58px; border-radius: 50%; border: none; cursor: pointer; z-index: 30; display: none; align-items: center; justify-content: center; font-size: 2rem; line-height: 1; color: #111; background: var(--green); box-shadow: 0 16px 30px rgba(0,0,0,0.22); }
+.fab:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.toast-container { position: fixed; top: 18px; right: 18px; z-index: 60; display: flex; flex-direction: column; gap: 10px; pointer-events: none; max-width: min(92vw, 360px); }
+.toast { pointer-events: auto; border: 1px solid var(--border); background: color-mix(in srgb, var(--card) 88%, transparent); color: var(--text); border-radius: 14px; padding: 12px 14px; box-shadow: 0 16px 34px rgba(0,0,0,0.18); transform: translateY(-6px); opacity: 0; animation: toastIn 0.22s ease forwards; }
+.toast.success { border-color: color-mix(in srgb, var(--green) 40%, var(--border)); }
+.toast.error { border-color: color-mix(in srgb, var(--red) 40%, var(--border)); }
+.toast.info { border-color: color-mix(in srgb, var(--blue) 40%, var(--border)); }
+.toast .title { font-size: 0.78rem; font-weight: 700; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+.toast.success .title { color: var(--green); } .toast.error .title { color: var(--red); } .toast.info .title { color: var(--blue); }
+.toast .msg { font-size: 0.86rem; line-height: 1.45; }
+@keyframes toastIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { to { opacity: 0; transform: translateY(-8px) scale(0.98); } }
+.confetti-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 55; }
+.confetti-piece { position: absolute; top: -12px; width: 10px; height: 16px; border-radius: 3px; opacity: 0.95; animation: confettiFall var(--dur) linear forwards; transform: translate3d(0,0,0) rotate(0deg); }
+@keyframes confettiFall { to { transform: translate3d(var(--drift), 110vh, 0) rotate(720deg); opacity: 0.95; } }
+.empty-state { display: grid; place-items: center; gap: 12px; padding: 42px 18px; border: 1px dashed var(--border); border-radius: 16px; background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); }
+.empty-illustration { width: min(100%, 260px); height: auto; opacity: 0.96; }
+.empty-copy { text-align: center; color: var(--muted); max-width: 320px; }
+.empty-copy strong { display: block; color: var(--text); font-size: 0.98rem; margin-bottom: 4px; }
+.empty-copy span { font-size: 0.85rem; }
+@media (max-width: 750px) { .fab { display: flex; } .toast-container { left: 12px; right: 12px; top: 12px; } }
+
 </style>
 </head>
 <body>
@@ -143,6 +199,7 @@
     <h1>Duit<span>Tracker</span></h1>
     <p>Catat & pantau keuangan bulanan kamu</p>
     <div class="toggle-wrap">
+      <input type="color" id="accentPicker" class="accent-picker" title="Accent color" onchange="setAccent(this.value)">
       <div class="toggle dark" id="themeToggle" onclick="toggleTheme()" title="Ganti tema">
         <div class="dot"></div>
       </div>
@@ -230,6 +287,9 @@
   <footer>Data disimpan otomatis di browser kamu • <span id="storageInfo"></span></footer>
 </div>
 
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+<button class="fab" onclick="focusQuickAdd()" title="Tambah catatan">＋</button>
+
 <script>
 const STORAGE_KEY = 'duittracker_data';
 const THEME_KEY = 'duittracker_theme';
@@ -263,13 +323,42 @@ function getSaldoAwal(mk) {
   return (ti-to)+getSaldoAwal(pmk);
 }
 
-// ── Theme ──
+
+// ── Theme & Accent ──
+const DEFAULT_ACCENT = '#22c55e';
+const ACCENT_KEY = 'duittracker_accent';
+let confettiTimer = null;
+
+function hexToRgb(hex) {
+  const cleaned = hex.replace('#', '').trim();
+  const full = cleaned.length === 3 ? cleaned.split('').map(c => c + c).join('') : cleaned;
+  const num = parseInt(full, 16);
+  return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+}
+
+function setAccent(hex, persist = true) {
+  const { r, g, b } = hexToRgb(hex);
+  document.documentElement.style.setProperty('--green', hex);
+  document.documentElement.style.setProperty('--green-bg', `rgba(${r},${g},${b},${document.body.classList.contains('light') ? 0.08 : 0.12})`);
+  document.documentElement.style.setProperty('--toggle-dot', hex);
+  if (persist) localStorage.setItem(ACCENT_KEY, hex);
+  const picker = document.getElementById('accentPicker');
+  if (picker) picker.value = hex;
+}
+
+function applyAccent() {
+  const saved = localStorage.getItem(ACCENT_KEY) || DEFAULT_ACCENT;
+  setAccent(saved, false);
+}
+
 function toggleTheme() {
   isDark = !isDark;
   document.body.classList.toggle('light', !isDark);
   document.getElementById('themeToggle').classList.toggle('dark', isDark);
-  localStorage.setItem(THEME_KEY, isDark?'dark':'light');
-  render(); // redraw canvas charts
+  localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+  applyAccent();
+  render(true);
+  showToast(isDark ? 'Mode gelap aktif' : 'Mode terang aktif', 'info');
 }
 
 function applyTheme() {
@@ -279,244 +368,472 @@ function applyTheme() {
   document.getElementById('themeToggle').classList.toggle('dark', isDark);
 }
 
+function showToast(message, kind = 'info', title = '') {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  const el = document.createElement('div');
+  el.className = `toast ${kind}`;
+  el.innerHTML = `<div class="title">${title || (kind === 'success' ? 'Sukses' : kind === 'error' ? 'Error' : 'Info')}</div><div class="msg">${message}</div>`;
+  container.appendChild(el);
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => {
+    el.style.animation = 'toastOut 0.18s ease forwards';
+    setTimeout(() => el.remove(), 180);
+  }, 2400);
+}
+
+function flashConfetti(count = 26) {
+  const layer = document.createElement('div');
+  layer.className = 'confetti-layer';
+  document.body.appendChild(layer);
+  const colors = [getComputedStyle(document.documentElement).getPropertyValue('--green').trim(), '#3b82f6', '#f59e0b', '#ef4444', '#a855f7'];
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('span');
+    piece.className = 'confetti-piece';
+    piece.style.left = `${Math.random() * 100}vw`;
+    piece.style.background = colors[i % colors.length];
+    piece.style.setProperty('--drift', `${(Math.random() * 180 - 90).toFixed(0)}px`);
+    piece.style.setProperty('--dur', `${1.4 + Math.random() * 0.8}s`);
+    piece.style.animationDelay = `${Math.random() * 0.18}s`;
+    layer.appendChild(piece);
+  }
+  clearTimeout(confettiTimer);
+  confettiTimer = setTimeout(() => layer.remove(), 2400);
+}
+
+function focusQuickAdd() {
+  const desc = document.getElementById('txDesc');
+  desc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => desc.focus(), 180);
+}
+
+function animateNumber(el, value, formatter) {
+  const next = Number(value) || 0;
+  const prev = Number(el.dataset.num ?? next);
+  if (el.dataset.num === undefined || prev === next) {
+    el.dataset.num = String(next);
+    el.textContent = formatter(next);
+    return;
+  }
+  const start = performance.now();
+  const duration = 320;
+  const step = (now) => {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    const current = prev + (next - prev) * ease;
+    el.textContent = formatter(current);
+    if (t < 1) requestAnimationFrame(step);
+    else {
+      el.dataset.num = String(next);
+      el.textContent = formatter(next);
+    }
+  };
+  requestAnimationFrame(step);
+}
+
+function formatGroupDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function emptyStateMarkup() {
+  return `
+    <div class="empty-state">
+      <svg class="empty-illustration" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="66" y="28" width="188" height="122" rx="22" fill="url(#g)" stroke="currentColor" stroke-opacity="0.14"/>
+        <rect x="86" y="52" width="88" height="10" rx="5" fill="currentColor" fill-opacity="0.18"/>
+        <rect x="86" y="72" width="146" height="10" rx="5" fill="currentColor" fill-opacity="0.1"/>
+        <rect x="86" y="92" width="124" height="10" rx="5" fill="currentColor" fill-opacity="0.1"/>
+        <circle cx="227" cy="115" r="25" fill="currentColor" fill-opacity="0.1"/>
+        <path d="M219 115l7 7 14-16" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="g" x1="66" y1="28" x2="254" y2="150" gradientUnits="userSpaceOnUse">
+            <stop stop-color="currentColor" stop-opacity="0.07"/>
+            <stop offset="1" stop-color="currentColor" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="empty-copy">
+        <strong>Belum ada catatan bulan ini</strong>
+        <span>Tambah pendapatan atau pengeluaran biar ringkasan dan grafiknya hidup.</span>
+      </div>
+    </div>`;
+}
+
 // ── Render ──
-function render() {
+function render(instant = false) {
   const mk = getMonthKey(currentDate);
-  document.getElementById('monthLabel').textContent = currentDate.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+  document.getElementById('monthLabel').textContent = currentDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
   document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
 
   const txs = getTransactions(mk);
-  let totalIncome=0, totalExpense=0, catMap={};
-  const weeks = { 1:{in:0,out:0}, 2:{in:0,out:0}, 3:{in:0,out:0}, 4:{in:0,out:0} };
+  let totalIncome = 0, totalExpense = 0, catMap = {};
+  const weeks = { 1: { in: 0, out: 0 }, 2: { in: 0, out: 0 }, 3: { in: 0, out: 0 }, 4: { in: 0, out: 0 } };
 
   txs.forEach(t => {
-    if (t.type==='income') { totalIncome+=t.amount; const w=getWeek(t.date); weeks[w].in+=t.amount }
-    else { totalExpense+=t.amount; const cat=t.category||'Lainnya'; catMap[cat]=(catMap[cat]||0)+t.amount; const w=getWeek(t.date); weeks[w].out+=t.amount }
+    const week = getWeek(t.date);
+    if (t.type === 'income') {
+      totalIncome += t.amount;
+      weeks[week].in += t.amount;
+    } else {
+      totalExpense += t.amount;
+      weeks[week].out += t.amount;
+      const cat = t.category || 'Lainnya';
+      catMap[cat] = (catMap[cat] || 0) + t.amount;
+    }
   });
 
   const saldoAwal = getSaldoAwal(mk);
-  const net = saldoAwal+totalIncome-totalExpense;
+  const net = saldoAwal + totalIncome - totalExpense;
 
-  document.getElementById('saldoAwal').textContent = formatRupiah(saldoAwal);
-  document.getElementById('saldoAwalSub').textContent = saldoAwal!==0?'dari bulan lalu':'';
-  document.getElementById('totalIncome').textContent = formatRupiah(totalIncome);
-  document.getElementById('totalExpense').textContent = formatRupiah(totalExpense);
-  document.getElementById('totalNet').textContent = formatRupiah(net);
-  const nc=document.getElementById('netCard'); nc.classList.remove('positive','negative'); if(net>0)nc.classList.add('positive'); if(net<0)nc.classList.add('negative');
+  animateNumber(document.getElementById('saldoAwal'), saldoAwal, formatRupiah);
+  animateNumber(document.getElementById('totalIncome'), totalIncome, formatRupiah);
+  animateNumber(document.getElementById('totalExpense'), totalExpense, formatRupiah);
+  animateNumber(document.getElementById('totalNet'), net, formatRupiah);
+  document.getElementById('saldoAwalSub').textContent = saldoAwal !== 0 ? 'dari bulan lalu' : '';
 
-  // Budget
+  const netCard = document.getElementById('netCard');
+  netCard.classList.remove('positive', 'negative');
+  if (net > 0) netCard.classList.add('positive');
+  if (net < 0) netCard.classList.add('negative');
+
   const budget = getBudget(mk);
-  document.getElementById('budgetInput').value = budget||'';
-  const ratio = budget>0?totalExpense/budget:0;
+  document.getElementById('budgetInput').value = budget || '';
+  const ratio = budget > 0 ? totalExpense / budget : 0;
   const bar = document.getElementById('budgetBar');
-  bar.style.width = `${Math.min(ratio*100,100)}%`;
-  bar.className = 'budget-bar-inner '+(ratio>1?'over':ratio>0.85?'danger':ratio>0.6?'warn':'safe');
-  document.getElementById('budgetPct').textContent = budget>0?`${Math.round(ratio*100)}%`+(ratio>1?' ⚠️':''):'-';
-  document.getElementById('budgetPct').style.color = ratio>1?'var(--red)':ratio>0.85?'var(--orange)':'var(--muted)';
+  bar.style.width = `${Math.min(ratio * 100, 100)}%`;
+  bar.className = 'budget-bar-inner ' + (ratio > 1 ? 'over' : ratio > 0.85 ? 'danger' : ratio > 0.6 ? 'warn' : 'safe');
+  document.getElementById('budgetPct').textContent = budget > 0 ? `${Math.round(ratio * 100)}%` + (ratio > 1 ? ' ⚠️' : '') : '-';
+  document.getElementById('budgetPct').style.color = ratio > 1 ? 'var(--red)' : ratio > 0.85 ? 'var(--orange)' : 'var(--muted)';
 
   drawDonut(catMap, totalExpense);
   drawWeekChart(weeks);
-
-  // Tx list
-  const list = document.getElementById('txList');
-  if (txs.length===0) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>Belum ada catatan bulan ini</p></div>';
-  } else {
-    const sorted=[...txs].reverse();
-    list.innerHTML = sorted.map(t=>{
-      const idx=txs.indexOf(t);
-      const icon=t.type==='income'?'📥':'📤', icClass=t.type==='income'?'income-icon':'expense-icon', ac=t.type==='income'?'income':'expense';
-      const ds=new Date(t.date).toLocaleDateString('id-ID',{weekday:'short',day:'numeric',month:'short'});
-      const cb=t.category?`<span class="tx-cat">${CAT_EMOJI[t.category]||''} ${t.category}</span>`:'';
-      return `<div class="tx-item"><div class="tx-icon ${icClass}">${icon}</div><div class="tx-info"><div class="desc">${escapeHtml(t.desc)}</div><div class="meta">${ds}</div></div>${cb}<div class="tx-amount ${ac}">${t.type==='expense'?'-':'+'}${formatRupiah(t.amount)}</div><button class="tx-delete" onclick="deleteTx(${idx})" title="Hapus">✕</button></div>`;
-    }).join('');
-  }
+  renderTransactions(txs);
   updateStorageInfo();
   onTypeChange();
+  const picker = document.getElementById('accentPicker');
+  if (picker) picker.value = localStorage.getItem(ACCENT_KEY) || DEFAULT_ACCENT;
+}
+
+function renderTransactions(txs) {
+  const list = document.getElementById('txList');
+  if (txs.length === 0) {
+    list.innerHTML = emptyStateMarkup();
+    return;
+  }
+
+  const sorted = txs.map((t, idx) => ({ t, idx })).sort((a, b) => {
+    const d = new Date(b.t.date) - new Date(a.t.date);
+    return d !== 0 ? d : b.idx - a.idx;
+  });
+
+  const groups = [];
+  sorted.forEach(item => {
+    const label = formatGroupDate(item.t.date);
+    const last = groups[groups.length - 1];
+    if (!last || last.label !== label) groups.push({ label, items: [item] });
+    else last.items.push(item);
+  });
+
+  let itemCount = 0;
+  list.innerHTML = groups.map(group => {
+    const itemsHtml = group.items.map(({ t, idx }) => {
+      const icon = t.type === 'income' ? '📥' : '📤';
+      const iconClass = t.type === 'income' ? 'income-icon' : 'expense-icon';
+      const amountClass = t.type === 'income' ? 'income' : 'expense';
+      const catBadge = t.category ? `<span class="tx-cat">${CAT_EMOJI[t.category] || ''} ${t.category}</span>` : '';
+      const time = new Date(t.date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      const html = `
+        <div class="tx-item tx-enter" data-index="${idx}" style="animation-delay:${Math.min(itemCount * 35, 280)}ms">
+          <div class="tx-icon ${iconClass}">${icon}</div>
+          <div class="tx-info">
+            <div class="desc">${escapeHtml(t.desc)}</div>
+            <div class="meta">${time}</div>
+          </div>
+          ${catBadge}
+          <div class="tx-amount ${amountClass}">${t.type === 'expense' ? '-' : '+'}${formatRupiah(t.amount)}</div>
+          <button class="tx-delete" onclick="deleteTx(${idx}, false)" title="Hapus">✕</button>
+        </div>`;
+      itemCount += 1;
+      return html;
+    }).join('');
+    return `<div class="tx-group"><div class="tx-group-header">${group.label}</div>${itemsHtml}</div>`;
+  }).join('');
+
+  list.querySelectorAll('.tx-item[data-index]').forEach(setupSwipe);
+}
+
+function setupSwipe(el) {
+  let startX = 0, startY = 0, currentX = 0;
+  const idx = Number(el.dataset.index);
+
+  el.addEventListener('touchstart', (e) => {
+    const t = e.touches[0];
+    startX = t.clientX; startY = t.clientY; currentX = 0;
+  }, { passive: true });
+
+  el.addEventListener('touchmove', (e) => {
+    const t = e.touches[0];
+    const dx = t.clientX - startX;
+    const dy = Math.abs(t.clientY - startY);
+    if (dy > 24) return;
+    currentX = Math.min(0, dx);
+    el.classList.add('swiping');
+    el.style.transform = `translateX(${currentX}px)`;
+    el.style.opacity = Math.max(0.42, 1 + currentX / 250);
+  }, { passive: true });
+
+  el.addEventListener('touchend', () => {
+    el.classList.remove('swiping');
+    if (currentX < -84) {
+      el.classList.add('swipe-out');
+      setTimeout(() => deleteTx(idx, true), 120);
+    } else {
+      el.style.transform = '';
+      el.style.opacity = '';
+    }
+  });
 }
 
 function getWeek(dateStr) {
-  const d=new Date(dateStr); const day=d.getDate();
-  if(day<=7)return 1; if(day<=14)return 2; if(day<=21)return 3; return 4;
+  const d = new Date(dateStr);
+  const day = d.getDate();
+  if (day <= 7) return 1; if (day <= 14) return 2; if (day <= 21) return 3; return 4;
 }
 
-// ── Donut Chart ──
 function drawDonut(catMap, totalExpense) {
-  const cv=document.getElementById('pieChart'), lg=document.getElementById('chartLegend'), pe=document.getElementById('pieEmpty');
-  if (totalExpense===0||Object.keys(catMap).length===0) {
-    cv.style.display='none'; lg.innerHTML=''; pe.style.display='block'; return;
+  const cv = document.getElementById('pieChart'), lg = document.getElementById('chartLegend'), pe = document.getElementById('pieEmpty');
+  if (totalExpense === 0 || Object.keys(catMap).length === 0) {
+    cv.style.display = 'none'; lg.innerHTML = ''; pe.style.display = 'block'; return;
   }
-  cv.style.display='block'; pe.style.display='none';
-  const ctx=cv.getContext('2d'), cx=70, cy=70, r=55;
-  ctx.clearRect(0,0,140,140);
-  const entries=Object.entries(catMap).sort((a,b)=>b[1]-a[1]); let angle=-Math.PI/2;
-  lg.innerHTML=entries.map(([cat,amt])=>{
-    const pct=((amt/totalExpense)*100).toFixed(0);
-    return `<div class="chart-legend-item"><span class="chart-legend-dot" style="background:${CAT_COLORS[cat]}"></span><span class="chart-legend-name">${CAT_EMOJI[cat]||''} ${cat}</span><span class="chart-legend-amt">${formatRupiahShort(amt)} (${pct}%)</span></div>`;
+  cv.style.display = 'block'; pe.style.display = 'none';
+  const ctx = cv.getContext('2d'), cx = 70, cy = 70, r = 55;
+  ctx.clearRect(0, 0, 140, 140);
+  const entries = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
+  let angle = -Math.PI / 2;
+  lg.innerHTML = entries.map(([cat, amt]) => {
+    const pct = ((amt / totalExpense) * 100).toFixed(0);
+    return `<div class="chart-legend-item"><span class="chart-legend-dot" style="background:${CAT_COLORS[cat]}"></span><span class="chart-legend-name">${CAT_EMOJI[cat] || ''} ${cat}</span><span class="chart-legend-amt">${formatRupiahShort(amt)} (${pct}%)</span></div>`;
   }).join('');
-  entries.forEach(([cat,amt])=>{
-    const slice=(amt/totalExpense)*Math.PI*2;
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,angle,angle+slice); ctx.closePath();
-    ctx.fillStyle=CAT_COLORS[cat]; ctx.fill();
-    angle+=slice;
+  entries.forEach(([cat, amt]) => {
+    const slice = (amt / totalExpense) * Math.PI * 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, angle, angle + slice); ctx.closePath();
+    ctx.fillStyle = CAT_COLORS[cat]; ctx.fill();
+    angle += slice;
   });
-  // hole
-  ctx.beginPath(); ctx.arc(cx,cy,30,0,Math.PI*2);
-  ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--canvas-hole').trim();
+  ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--canvas-hole').trim();
   ctx.fill();
-  ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
-  ctx.font='bold 13px Inter,system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(formatRupiahShort(totalExpense),cx,cy);
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
+  ctx.font = 'bold 13px Inter,system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(formatRupiahShort(totalExpense), cx, cy);
 }
 
-// ── Weekly Bar Chart ──
 function drawWeekChart(weeks) {
-  const cv=document.getElementById('weekChart'), we=document.getElementById('weekEmpty');
-  const allZero = Object.values(weeks).every(w=>w.in===0&&w.out===0);
-  if (allZero) { cv.style.display='none'; we.style.display='block'; return }
-  cv.style.display='block'; we.style.display='none';
-  const ctx=cv.getContext('2d'), W=cv.width=440, H=cv.height=140;
-  ctx.clearRect(0,0,W,H);
-  const pad={t:16,b:24,l:55,r:20}, pw=W-pad.l-pad.r, ph=H-pad.t-pad.b;
-  const maxVal=Math.max(...Object.values(weeks).map(w=>Math.max(w.in,w.out)), 1);
-  const bg=getComputedStyle(document.documentElement).getPropertyValue('--muted').trim();
-  const tx=getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
-
-  // grid
-  ctx.strokeStyle='#88888820'; ctx.lineWidth=0.5;
-  for(let i=0;i<=4;i++) { const y=pad.t+(ph/4)*i; ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke() }
-  // labels
-  ctx.fillStyle=bg; ctx.font='9px Inter,system-ui'; ctx.textAlign='right';
-  for(let i=0;i<=4;i++) { const v=(maxVal/4)*(4-i); ctx.fillText(formatRupiahShort(v),pad.l-6,pad.t+(ph/4)*i+3) }
-
-  const barW=(pw-20)/4, gap=barW*0.3, bw=(barW-gap)/2;
-  const wn=['Minggu 1','Minggu 2','Minggu 3','Minggu 4'];
-  ctx.textAlign='center';
-  for(let i=1;i<=4;i++){
-    const x0=pad.l+(i-1)*barW;
-    // income bar (green)
-    const ih=(weeks[i].in/maxVal)*ph;
-    ctx.fillStyle='#22c55eaa'; ctx.fillRect(x0,pad.t+ph-ih,bw,ih);
-    // expense bar (red)
-    const eh=(weeks[i].out/maxVal)*ph;
-    ctx.fillStyle='#ef4444aa'; ctx.fillRect(x0+bw,pad.t+ph-eh,bw,eh);
-    // week label
-    ctx.fillStyle=tx; ctx.font='9px Inter,system-ui';
-    ctx.fillText(wn[i-1],x0+barW/2,H-pad.b+12);
-    // values
-    ctx.font='7px Inter,system-ui';
-    ctx.fillStyle='#22c55e'; ctx.fillText(formatRupiahShort(weeks[i].in),x0+bw/2,pad.t+ph-ih-4);
-    ctx.fillStyle='#ef4444'; ctx.fillText(formatRupiahShort(weeks[i].out),x0+bw+bw/2,pad.t+ph-eh-4);
+  const cv = document.getElementById('weekChart'), we = document.getElementById('weekEmpty');
+  const allZero = Object.values(weeks).every(w => w.in === 0 && w.out === 0);
+  if (allZero) { cv.style.display = 'none'; we.style.display = 'block'; return; }
+  cv.style.display = 'block'; we.style.display = 'none';
+  const ctx = cv.getContext('2d'), W = cv.width = 440, H = cv.height = 140;
+  ctx.clearRect(0, 0, W, H);
+  const pad = { t: 16, b: 24, l: 55, r: 20 }, pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+  const maxVal = Math.max(...Object.values(weeks).map(w => Math.max(w.in, w.out)), 1);
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim();
+  const tx = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
+  ctx.strokeStyle = '#88888820'; ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 4; i++) { const y = pad.t + (ph / 4) * i; ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke(); }
+  ctx.fillStyle = bg; ctx.font = '9px Inter,system-ui'; ctx.textAlign = 'right';
+  for (let i = 0; i <= 4; i++) { const v = (maxVal / 4) * (4 - i); ctx.fillText(formatRupiahShort(v), pad.l - 6, pad.t + (ph / 4) * i + 3); }
+  const barW = (pw - 20) / 4, gap = barW * 0.3, bw = (barW - gap) / 2;
+  const wn = ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'];
+  ctx.textAlign = 'center';
+  for (let i = 1; i <= 4; i++) {
+    const x0 = pad.l + (i - 1) * barW;
+    const ih = (weeks[i].in / maxVal) * ph;
+    ctx.fillStyle = '#22c55eaa'; ctx.fillRect(x0, pad.t + ph - ih, bw, ih);
+    const eh = (weeks[i].out / maxVal) * ph;
+    ctx.fillStyle = '#ef4444aa'; ctx.fillRect(x0 + bw, pad.t + ph - eh, bw, eh);
+    ctx.fillStyle = tx; ctx.font = '9px Inter,system-ui';
+    ctx.fillText(wn[i - 1], x0 + barW / 2, H - pad.b + 12);
+    ctx.font = '7px Inter,system-ui';
+    ctx.fillStyle = '#22c55e'; ctx.fillText(formatRupiahShort(weeks[i].in), x0 + bw / 2, pad.t + ph - ih - 4);
+    ctx.fillStyle = '#ef4444'; ctx.fillText(formatRupiahShort(weeks[i].out), x0 + bw + bw / 2, pad.t + ph - eh - 4);
   }
-  // legend
-  ctx.fillStyle='#22c55e'; ctx.fillRect(W-120,8,10,10);
-  ctx.fillStyle=tx; ctx.font='9px Inter,system-ui'; ctx.textAlign='left';
-  ctx.fillText('Pendapatan',W-108,16);
-  ctx.fillStyle='#ef4444'; ctx.fillRect(W-120,22,10,10);
-  ctx.fillStyle=tx; ctx.fillText('Pengeluaran',W-108,30);
+  ctx.fillStyle = '#22c55e'; ctx.fillRect(W - 120, 8, 10, 10);
+  ctx.fillStyle = tx; ctx.font = '9px Inter,system-ui'; ctx.textAlign = 'left';
+  ctx.fillText('Pendapatan', W - 108, 16);
+  ctx.fillStyle = '#ef4444'; ctx.fillRect(W - 120, 22, 10, 10);
+  ctx.fillStyle = tx; ctx.fillText('Pengeluaran', W - 108, 30);
 }
 
-// ── Actions ──
 function onTypeChange() {
-  document.getElementById('txCategory').style.display = document.getElementById('txType').value==='expense'?'':'none';
+  document.getElementById('txCategory').style.display = document.getElementById('txType').value === 'expense' ? '' : 'none';
 }
-function addTransaction() {
-  const type=document.getElementById('txType').value, desc=document.getElementById('txDesc').value.trim(), amount=parseInt(document.getElementById('txAmount').value), dateVal=document.getElementById('txDate').value, catSel=document.getElementById('txCategory');
-  if(!desc) return alert('Isi deskripsi dulu');
-  if(!amount||amount<=0) return alert('Jumlah harus lebih dari 0');
-  const mk=getMonthKey(currentDate), txs=getTransactions(mk);
-  const entry={type,desc,amount,date:dateVal,created:Date.now()};
-  if(type==='expense'&&catSel.value) entry.category=catSel.value;
-  txs.push(entry); setTransactions(mk,txs);
-  document.getElementById('txDesc').value=''; document.getElementById('txAmount').value=''; if(catSel)catSel.value='';
-  render();
-}
-function setBudget() {
-  const val=parseInt(document.getElementById('budgetInput').value)||0;
-  setBudgetVal(getMonthKey(currentDate),val); render();
-}
-function deleteTx(idx) {
-  if(!confirm('Hapus catatan ini?')) return;
-  const mk=getMonthKey(currentDate), txs=getTransactions(mk);
-  txs.splice(idx,1); setTransactions(mk,txs); render();
-}
-function clearMonth() {
-  const mk=getMonthKey(currentDate), txs=getTransactions(mk);
-  if(txs.length===0) return;
-  if(!confirm(`Hapus SEMUA ${txs.length} catatan bulan ini?`)) return;
-  setTransactions(mk,[]); render();
-}
-function changeMonth(delta) { currentDate.setMonth(currentDate.getMonth()+delta); currentDate=new Date(currentDate); render() }
-function goToday() { currentDate=new Date(); render() }
-function updateStorageInfo() { const used=new Blob([JSON.stringify(data)]).size; document.getElementById('storageInfo').textContent=`${(used/1024).toFixed(1)} KB terpakai` }
 
-// ── Backup JSON ──
+function addTransaction() {
+  const type = document.getElementById('txType').value;
+  const desc = document.getElementById('txDesc').value.trim();
+  const amount = parseInt(document.getElementById('txAmount').value);
+  const dateVal = document.getElementById('txDate').value;
+  const catSel = document.getElementById('txCategory');
+
+  if (!desc) return showToast('Isi deskripsi dulu', 'error', 'Validasi');
+  if (!amount || amount <= 0) return showToast('Jumlah harus lebih dari 0', 'error', 'Validasi');
+
+  const mk = getMonthKey(currentDate), txs = getTransactions(mk);
+  const entry = { type, desc, amount, date: dateVal, created: Date.now() };
+  if (type === 'expense' && catSel.value) entry.category = catSel.value;
+  txs.push(entry);
+  setTransactions(mk, txs);
+
+  document.getElementById('txDesc').value = '';
+  document.getElementById('txAmount').value = '';
+  if (catSel) catSel.value = '';
+  render();
+
+  const budget = getBudget(mk);
+  const totalExpense = txs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+  const totalIncome = txs.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+  const net = getSaldoAwal(mk) + totalIncome - totalExpense;
+  if (type === 'expense' && budget > 0 && totalExpense <= budget * 0.85) flashConfetti();
+  if (type === 'income' && net >= 0) flashConfetti(18);
+  showToast('Catatan ditambahkan', 'success');
+}
+
+function setBudget() {
+  const val = parseInt(document.getElementById('budgetInput').value) || 0;
+  setBudgetVal(getMonthKey(currentDate), val);
+  render();
+  showToast(val > 0 ? `Budget disimpan: ${formatRupiah(val)}` : 'Budget dihapus', 'info');
+}
+
+function deleteTx(idx, direct = false) {
+  if (!direct && !confirm('Hapus catatan ini?')) return;
+  const mk = getMonthKey(currentDate), txs = getTransactions(mk);
+  const removed = txs[idx];
+  txs.splice(idx, 1);
+  setTransactions(mk, txs);
+  render();
+  showToast(`Dihapus: ${removed ? removed.desc : 'catatan'}`, 'info');
+}
+
+function clearMonth() {
+  const mk = getMonthKey(currentDate), txs = getTransactions(mk);
+  if (txs.length === 0) return showToast('Tidak ada catatan yang bisa dihapus', 'info');
+  if (!confirm(`Hapus SEMUA ${txs.length} catatan bulan ini?`)) return;
+  setTransactions(mk, []);
+  render();
+  showToast('Semua catatan bulan ini dihapus', 'info');
+}
+
+function withTransition(fn) {
+  const c = document.querySelector('.container');
+  c.classList.add('switching');
+  setTimeout(() => {
+    fn();
+    render();
+    c.classList.remove('switching');
+  }, 110);
+}
+
+function changeMonth(delta) { withTransition(() => { currentDate.setMonth(currentDate.getMonth() + delta); currentDate = new Date(currentDate); }); }
+function goToday() { withTransition(() => { currentDate = new Date(); }); }
+function updateStorageInfo() { const used = new Blob([JSON.stringify(data)]).size; document.getElementById('storageInfo').textContent = `${(used / 1024).toFixed(1)} KB terpakai`; }
+
 function exportJSON() {
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=`duittracker-backup-${new Date().toISOString().split('T')[0]}.json`;
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `duittracker-backup-${new Date().toISOString().split('T')[0]}.json`;
   a.click(); URL.revokeObjectURL(a.href);
+  showToast('Backup JSON diunduh', 'success');
 }
 function importJSON(ev) {
-  const file=ev.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
+  const file = ev.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
     try {
-      const imported=JSON.parse(e.target.result);
-      if(!imported||typeof imported!=='object') throw new Error('Format tidak valid');
-      if(!confirm(`Import ${Object.keys(imported).filter(k=>!k.startsWith('_')).length} bulan data? Data saat ini akan ditimpa.`)) return;
-      data=imported; saveData(); render(); alert('✅ Data berhasil diimport!');
-    } catch(err) { alert('❌ File tidak valid: '+err.message) }
+      const imported = JSON.parse(e.target.result);
+      if (!imported || typeof imported !== 'object') throw new Error('Format tidak valid');
+      if (!confirm(`Import ${Object.keys(imported).filter(k => !k.startsWith('_')).length} bulan data? Data saat ini akan ditimpa.`)) return;
+      data = imported; saveData(); render();
+      showToast('Data berhasil diimport', 'success');
+    } catch (err) { showToast('File tidak valid: ' + err.message, 'error', 'Import gagal'); }
   };
   reader.readAsText(file);
-  ev.target.value='';
+  ev.target.value = '';
 }
 
-// ── Export CSV ──
 function exportCSV() {
-  const mk=getMonthKey(currentDate), txs=getTransactions(mk);
-  if(txs.length===0) return alert('Tidak ada data untuk diexport');
-  let csv='Tipe,Kategori,Deskripsi,Jumlah,Tanggal\n';
-  txs.forEach(t=>{ csv+=`${t.type==='income'?'Pendapatan':'Pengeluaran'},${t.category||''},"${t.desc}",${t.amount},${t.date}\n` });
-  const ti=txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0), to=txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0), sa=getSaldoAwal(mk);
-  csv+=`\nSaldo Awal,,,${sa},\nTotal Pendapatan,,,${ti},\nTotal Pengeluaran,,,${to},\nAkhir Bulan,,,${sa+ti-to},\n`;
-  downloadFile(csv,`duittracker-${mk}.csv`,'text/csv');
+  const mk = getMonthKey(currentDate), txs = getTransactions(mk);
+  if (txs.length === 0) return showToast('Tidak ada data untuk diexport', 'info');
+  let csv = 'Tipe,Kategori,Deskripsi,Jumlah,Tanggal\\n';
+  txs.forEach(t => { csv += `${t.type === 'income' ? 'Pendapatan' : 'Pengeluaran'},${t.category || ''},"${t.desc}",${t.amount},${t.date}\\n`; });
+  const ti = txs.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0), to = txs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0), sa = getSaldoAwal(mk);
+  csv += `\\nSaldo Awal,,,${sa},\\nTotal Pendapatan,,,${ti},\\nTotal Pengeluaran,,,${to},\\nAkhir Bulan,,,${sa + ti - to},\\n`;
+  downloadFile(csv, `duittracker-${mk}.csv`, 'text/csv');
+  showToast('CSV berhasil diunduh', 'success');
 }
 
-// ── Export PDF ──
 function exportPDF() {
-  const mk=getMonthKey(currentDate), txs=getTransactions(mk);
-  if(txs.length===0) return alert('Tidak ada data untuk diexport');
-  const {jsPDF}=window.jspdf, doc=new jsPDF();
-  doc.setFillColor(22,163,74); doc.rect(0,0,210,28,'F'); doc.setTextColor(255,255,255);
-  doc.setFontSize(18); doc.setFont('helvetica','bold'); doc.text('DuitTracker',14,18);
-  doc.setFontSize(9); doc.setFont('helvetica','normal');
-  doc.text(`Laporan — ${currentDate.toLocaleDateString('id-ID',{month:'long',year:'numeric'})}`,14,25);
-  doc.autoTable({ startY:34, head:[['Tipe','Kategori','Deskripsi','Jumlah','Tanggal']],
-    body:txs.map(t=>[t.type==='income'?'Pendapatan':'Pengeluaran',t.category||'-',t.desc,`Rp ${t.amount.toLocaleString('id-ID')}`,new Date(t.date).toLocaleDateString('id-ID')]),
-    styles:{fontSize:8,cellPadding:2.5,textColor:[30,30,40],fillColor:[255,255,255],lineColor:[200,210,220],lineWidth:0.3},
-    headStyles:{fillColor:[22,163,74],textColor:[255,255,255],fontStyle:'bold'},
-    alternateRowStyles:{fillColor:[240,248,245]} });
-  const ti=txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0), to=txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0), sa=getSaldoAwal(mk), net=sa+ti-to;
-  let y=doc.lastAutoTable.finalY+10; doc.setFontSize(9); doc.setFont('helvetica','normal');
-  if(sa!==0){ doc.setTextColor(59,130,246); doc.text(`Saldo Awal: Rp ${sa.toLocaleString('id-ID')}`,14,y); y+=6 }
-  doc.setTextColor(22,163,74); doc.text(`Pendapatan: Rp ${ti.toLocaleString('id-ID')}`,14,y); y+=6;
-  doc.setTextColor(220,38,38); doc.text(`Pengeluaran: Rp ${to.toLocaleString('id-ID')}`,14,y); y+=8;
-  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(net>=0?22:220,net>=0?163:38,net>=0?74:38);
-  doc.text(`Akhir Bulan: Rp ${net.toLocaleString('id-ID')}`,14,y);
-  const budget=getBudget(mk); if(budget>0){ y+=8; doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(140,140,150); doc.text(`Budget: ${Math.round(to/budget*100)}% terpakai`,14,y) }
-  doc.setFontSize(7); doc.setTextColor(140,140,150); doc.text(new Date().toLocaleDateString('id-ID'),14,285);
+  const mk = getMonthKey(currentDate), txs = getTransactions(mk);
+  if (txs.length === 0) return showToast('Tidak ada data untuk diexport', 'info');
+  const { jsPDF } = window.jspdf, doc = new jsPDF();
+  doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 28, 'F'); doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18); doc.setFont('helvetica', 'bold'); doc.text('DuitTracker', 14, 18);
+  doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+  doc.text(`Laporan — ${currentDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}`, 14, 25);
+  doc.autoTable({ startY: 34, head: [['Tipe', 'Kategori', 'Deskripsi', 'Jumlah', 'Tanggal']],
+    body: txs.map(t => [t.type === 'income' ? 'Pendapatan' : 'Pengeluaran', t.category || '-', t.desc, `Rp ${t.amount.toLocaleString('id-ID')}`, new Date(t.date).toLocaleDateString('id-ID')]),
+    styles: { fontSize: 8, cellPadding: 2.5, textColor: [30, 30, 40], fillColor: [255, 255, 255], lineColor: [200, 210, 220], lineWidth: 0.3 },
+    headStyles: { fillColor: [22, 163, 74], textColor: [255, 255, 255], fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [240, 248, 245] } });
+  const ti = txs.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0), to = txs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0), sa = getSaldoAwal(mk), net = sa + ti - to;
+  let y = doc.lastAutoTable.finalY + 10; doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+  if (sa !== 0) { doc.setTextColor(59, 130, 246); doc.text(`Saldo Awal: Rp ${sa.toLocaleString('id-ID')}`, 14, y); y += 6; }
+  doc.setTextColor(22, 163, 74); doc.text(`Pendapatan: Rp ${ti.toLocaleString('id-ID')}`, 14, y); y += 6;
+  doc.setTextColor(220, 38, 38); doc.text(`Pengeluaran: Rp ${to.toLocaleString('id-ID')}`, 14, y); y += 8;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(net >= 0 ? 22 : 220, net >= 0 ? 163 : 38, net >= 0 ? 74 : 38);
+  doc.text(`Akhir Bulan: Rp ${net.toLocaleString('id-ID')}`, 14, y);
+  const budget = getBudget(mk); if (budget > 0) { y += 8; doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.setTextColor(140, 140, 150); doc.text(`Budget: ${Math.round(to / budget * 100)}% terpakai`, 14, y); }
+  doc.setFontSize(7); doc.setTextColor(140, 140, 150); doc.text(new Date().toLocaleDateString('id-ID'), 14, 285);
   doc.save(`duittracker-${mk}.pdf`);
+  showToast('PDF berhasil diunduh', 'success');
 }
 
-function downloadFile(content,filename,mime) {
-  const b=new Blob([content],{type:mime}), u=URL.createObjectURL(b), a=document.createElement('a');
-  a.href=u; a.download=filename; a.click(); URL.revokeObjectURL(u);
+function downloadFile(content, filename, mime) {
+  const b = new Blob([content], { type: mime }), u = URL.createObjectURL(b), a = document.createElement('a');
+  a.href = u; a.download = filename; a.click(); URL.revokeObjectURL(u);
+}
+
+function setupShortcuts() {
+  window.addEventListener('keydown', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : '';
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) {
+      if (e.key === 'Escape') e.target.blur();
+      return;
+    }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); changeMonth(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); changeMonth(1); }
+    if (e.key.toLowerCase() === 'n') { e.preventDefault(); focusQuickAdd(); }
+    if (e.key.toLowerCase() === 'b') { e.preventDefault(); document.getElementById('budgetInput').focus(); }
+    if (e.key.toLowerCase() === 't') { e.preventDefault(); toggleTheme(); }
+    if (e.key.toLowerCase() === 'e') { e.preventDefault(); exportCSV(); }
+    if (e.key.toLowerCase() === 'p') { e.preventDefault(); exportPDF(); }
+    if (e.key === '?') { e.preventDefault(); showToast('Shortcut: N tambah, ←/→ bulan, B budget, T tema, E CSV, P PDF', 'info', 'Shortcut'); }
+  });
+  ['txDesc', 'txAmount', 'txDate'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addTransaction();
+    });
+  });
 }
 
 // ── Init ──
 applyTheme();
-render();
+applyAccent();
+setupShortcuts();
+render(true);
+
 </script>
 </body>
 </html>
