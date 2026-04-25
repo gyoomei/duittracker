@@ -600,14 +600,31 @@ function getWeek(dateStr) {
   if (day <= 7) return 1; if (day <= 14) return 2; if (day <= 21) return 3; return 4;
 }
 
+function setupHiDPICanvas(canvas) {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const width = Math.max(1, Math.round(rect.width * dpr));
+  const height = Math.max(1, Math.round(rect.height * dpr));
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, rect.width, rect.height);
+  return { ctx, width: rect.width, height: rect.height, dpr };
+}
+
 function drawDonut(catMap, totalExpense) {
   const cv = document.getElementById('pieChart'), lg = document.getElementById('chartLegend'), pe = document.getElementById('pieEmpty');
   if (totalExpense === 0 || Object.keys(catMap).length === 0) {
     cv.style.display = 'none'; lg.innerHTML = ''; pe.style.display = 'block'; return;
   }
   cv.style.display = 'block'; pe.style.display = 'none';
-  const ctx = cv.getContext('2d'), cx = 70, cy = 70, r = 55;
-  ctx.clearRect(0, 0, 140, 140);
+  const { ctx, width, height } = setupHiDPICanvas(cv);
+  const cx = width / 2, cy = height / 2, r = Math.min(width, height) / 2 - 6;
+  const hole = Math.min(width, height) * 0.22;
   const entries = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
   let angle = -Math.PI / 2;
   lg.innerHTML = entries.map(([cat, amt]) => {
@@ -620,7 +637,7 @@ function drawDonut(catMap, totalExpense) {
     ctx.fillStyle = CAT_COLORS[cat]; ctx.fill();
     angle += slice;
   });
-  ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+  ctx.beginPath(); ctx.arc(cx, cy, hole, 0, Math.PI * 2);
   ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--canvas-hole').trim();
   ctx.fill();
   ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
@@ -633,27 +650,28 @@ function drawWeekChart(weeks) {
   const allZero = Object.values(weeks).every(w => w.in === 0 && w.out === 0);
   if (allZero) { cv.style.display = 'none'; we.style.display = 'block'; return; }
   cv.style.display = 'block'; we.style.display = 'none';
-  const ctx = cv.getContext('2d'), W = cv.width = 440, H = cv.height = 140;
+  const { ctx, width, height } = setupHiDPICanvas(cv);
+  const W = width, H = height;
   ctx.clearRect(0, 0, W, H);
-  const pad = { t: 16, b: 24, l: 55, r: 20 }, pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+  const pad = { t: 16, b: 26, l: 52, r: 18 }, pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
   const maxVal = Math.max(...Object.values(weeks).map(w => Math.max(w.in, w.out)), 1);
   const bg = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim();
   const tx = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
-  ctx.strokeStyle = '#88888820'; ctx.lineWidth = 0.5;
+  ctx.strokeStyle = '#88888820'; ctx.lineWidth = 1;
   for (let i = 0; i <= 4; i++) { const y = pad.t + (ph / 4) * i; ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke(); }
-  ctx.fillStyle = bg; ctx.font = '9px Inter,system-ui'; ctx.textAlign = 'right';
-  for (let i = 0; i <= 4; i++) { const v = (maxVal / 4) * (4 - i); ctx.fillText(formatRupiahShort(v), pad.l - 6, pad.t + (ph / 4) * i + 3); }
+  ctx.fillStyle = bg; ctx.font = '9px Inter,system-ui'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let i = 0; i <= 4; i++) { const v = (maxVal / 4) * (4 - i); ctx.fillText(formatRupiahShort(v), pad.l - 6, pad.t + (ph / 4) * i); }
   const barW = (pw - 20) / 4, gap = barW * 0.3, bw = (barW - gap) / 2;
   const wn = ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'];
-  ctx.textAlign = 'center';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
   for (let i = 1; i <= 4; i++) {
     const x0 = pad.l + (i - 1) * barW;
     const ih = (weeks[i].in / maxVal) * ph;
-    ctx.fillStyle = '#22c55eaa'; ctx.fillRect(x0, pad.t + ph - ih, bw, ih);
+    ctx.fillStyle = '#22c55e'; ctx.globalAlpha = 0.78; ctx.fillRect(x0, pad.t + ph - ih, bw, ih); ctx.globalAlpha = 1;
     const eh = (weeks[i].out / maxVal) * ph;
-    ctx.fillStyle = '#ef4444aa'; ctx.fillRect(x0 + bw, pad.t + ph - eh, bw, eh);
+    ctx.fillStyle = '#ef4444'; ctx.globalAlpha = 0.78; ctx.fillRect(x0 + bw, pad.t + ph - eh, bw, eh); ctx.globalAlpha = 1;
     ctx.fillStyle = tx; ctx.font = '9px Inter,system-ui';
-    ctx.fillText(wn[i - 1], x0 + barW / 2, H - pad.b + 12);
+    ctx.fillText(wn[i - 1], x0 + barW / 2, H - 8);
     ctx.font = '7px Inter,system-ui';
     ctx.fillStyle = '#22c55e'; ctx.fillText(formatRupiahShort(weeks[i].in), x0 + bw / 2, pad.t + ph - ih - 4);
     ctx.fillStyle = '#ef4444'; ctx.fillText(formatRupiahShort(weeks[i].out), x0 + bw + bw / 2, pad.t + ph - eh - 4);
